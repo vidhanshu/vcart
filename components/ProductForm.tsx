@@ -16,6 +16,12 @@ import { RxCross1 } from "react-icons/rx";
 import axios from "axios";
 import { uploadImage } from "@/requests/imgUpload";
 
+interface ItemInterface {
+  id: string;
+  name?: string;
+  [key: string]: any;
+}
+
 type ProductForm = {
   formTitle: string;
   onsubmit: (e: React.SyntheticEvent) => void;
@@ -78,12 +84,19 @@ function ProductForm({
     }
   };
 
-  const sortImages = (a: string[]) => {
+  const sortImages = (a: ItemInterface[]) => {
+    const updated = a.map((i) => i.name || "");
     setProduct((prod) => ({
       ...prod,
-      images: a,
+      images: updated,
     }));
   };
+
+  //for sortable
+  const images = product.images.map((image, index) => ({
+    id: `image-${index}`,
+    name: image,
+  }));
 
   return (
     <div>
@@ -117,7 +130,7 @@ function ProductForm({
         <div className="flex flex-row gap-2">
           {/* rendering images if any and allowing them to drag and reorder */}
           <ReactSortable
-            list={product.images}
+            list={images}
             setList={sortImages}
             className="flex gap-2"
           >
